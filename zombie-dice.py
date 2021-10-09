@@ -9,8 +9,10 @@
 from time import sleep
 from collections import namedtuple
 from random import *
+from termcolor import colored
 
 # Declaração da classe
+
 
 class Zombie_Dice:
     # Variáveis e estruturas de dados
@@ -19,10 +21,12 @@ class Zombie_Dice:
     lista_de_jogadores = []
     Dados = namedtuple("Cor", ["verde", "amarelo", "vermelho"])
     dado = Dados("CPCTPC", "TPCTPC", "TPTCPT")
+    line_size = 64
 
     # Print divisor
+
     def print_linha(self):
-        print("*" * 64)
+        print(colored("*" * self.line_size, 'magenta'))
 
     # Pedir número de jogadores
     def numero_jogadores(self):
@@ -92,18 +96,18 @@ class Zombie_Dice:
         for jogador in self.lista_de_jogadores:
             if jogador[2] >= 13:
                 print(
-                    f"VITORIOSOO! {jogador[1]} Tá com a pança cheia de cérebros!")
+                    f"{colored('VITORIOSOO!', 'green')} {jogador[1]} tá com a pança cheia de cérebros!")
                 exit()
 
     # Verificar a cor do dado
     def cor_dado(self, dado_sorteado):
         cor = ''
         if dado_sorteado == self.dado.verde:
-            cor = "DADO VERDE"
+            cor = colored("DADO VERDE", 'green', attrs=['bold'])
         elif dado_sorteado == self.dado.amarelo:
-            cor = "DADO AMARELO"
+            cor = colored("DADO AMARELO", 'yellow', attrs=['bold'])
         else:
-            cor = "DADO VERMELHO"
+            cor = colored("DADO VERMELHO", 'red', attrs=['bold'])
         return print(cor)
 
     # Tirar três dados do tubo
@@ -120,21 +124,21 @@ class Zombie_Dice:
             # Verificar face
             self.cor_dado(dado_sorteado)
             if dado_sorteado[face_sorteada] == "C":
-                print("CÉÉREBRO!!")
+                print(colored("CÉÉREBRO!!", 'blue'))
                 print("Você comeu um cérebro!")
                 self.tubo.pop(numero_sorteado)
                 self.contar_dados_tubo()
                 jogador[2] += 1
 
             elif dado_sorteado[face_sorteada] == "T":
-                print("TIIIRO!")
+                print(colored("TIIIRO!", 'red'))
                 print("Você levou um tiro!")
                 self.tubo.pop(numero_sorteado)
                 self.contar_dados_tubo()
                 jogador[3] += 1
 
             else:
-                print("PASSOS!")
+                print(colored("PASSOS!", 'cyan'))
                 print("A vítima escapou nessa rodada!")
                 self.tubo.pop(numero_sorteado)
                 self.contar_dados_tubo()
@@ -143,7 +147,8 @@ class Zombie_Dice:
             self.print_linha()
 
         self.print_linha()
-        print(f"{jogador[1]}, você tem {jogador[2]} cérebros e {jogador[3]} tiros")
+        print(
+            f"{jogador[1]}, você tem {jogador[2]} cérebros e {jogador[3]} tiros")
         if jogador[3] < 3:
             continuar_resposta = input(
                 f"{jogador[1]} continuar jogando os dados? (S/N) \n")
@@ -163,7 +168,7 @@ class Zombie_Dice:
     def jogar(self):
         while True:
             self.print_linha()
-            print("=                       JOGO ZOMBIE DICE                       =")
+            print("+" + "JOGO ZOMBIE DICE".center(self.line_size - 2) + "+")
             self.print_linha()
             print("Bem-vindos, zumbis.")
             sleep(0.8)
