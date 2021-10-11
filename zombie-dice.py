@@ -21,7 +21,7 @@ class Zombie_Dice:
     lista_de_jogadores = []
     Dados = namedtuple("Cor", ["verde", "amarelo", "vermelho"])
     dado = Dados("CPCTPC", "TPCTPC", "TPTCPT")
-    line_size = 64
+    line_size = 66
 
     # Print divisor
 
@@ -30,14 +30,14 @@ class Zombie_Dice:
 
     # Pedir número de jogadores
     def numero_jogadores(self):
-        resposta = int(input("Quantos jogadores vocês são? (2-9)\n"))
+        resposta = int(input("Quantos jogadores vocês são? (2-9)\n-> "))
         self.print_linha()
         if resposta < 2 or resposta > 9:
             print("Número de zumbis inválido, escolha entre 2 e 9 jogadores")
         else:
             for indice in range(resposta):
                 sleep(0.5)
-                nome = input(f"Digite o nome do jogador {indice + 1}:\n")
+                nome = input(f"Digite o nome do jogador {indice + 1}:\n-> ")
                 self.print_linha
                 cerebros = 0
                 tiros = 0
@@ -45,8 +45,9 @@ class Zombie_Dice:
                 # Estrutura de dados para contabilização
                 jogador = [indice, nome, cerebros, tiros, passos]
                 self.lista_de_jogadores.append(jogador)
-
+                self.print_linha()
     # Colocar dados no tubo
+
     def carregar_tubo(self):
         # Adicionar dados verdes no tubo
         self.tubo = []
@@ -61,18 +62,17 @@ class Zombie_Dice:
 
     # Exibir rodada
     def exibir_rodada(self):
-        self.print_linha()
         rodada = f"{self.rodada:02d}"
-        print(f"{'RODADA ' + rodada:^64}")
         self.print_linha()
+        print(f"{'RODADA ' + rodada:^64}")
 
     # Apresentar score
     def apresentar_score(self):
         for jogador in self.lista_de_jogadores:
             print(f"{jogador[0] + 1} {jogador[1]}: {jogador[2]} cérebros.")
-            self.print_linha()
 
     # Zerar tiros
+
     def zerar_tiros(self):
         for jogador in self.lista_de_jogadores:
             jogador[3] = 0
@@ -86,17 +86,17 @@ class Zombie_Dice:
             dados_verdes += 1 if dado == self.dado.verde else 0
             dados_amarelos += 1 if dado == self.dado.amarelo else 0
             dados_vermelhos += 1 if dado == self.dado.vermelho else 0
-        print(
-            f'Dados no tubo: {dados_verdes} verdes, {dados_amarelos} amarelos e {dados_vermelhos} vermelhos.')
-        self.print_linha()
+        print(f'Dados no tubo: ' + colored(dados_verdes, 'green') + ' verdes, ' + colored(dados_amarelos, 'yellow') + ' amarelos e ' + colored(dados_vermelhos, 'red') + ' vermelhos.')
 
     # Verificar vitória
 
     def verificar_vitoria(self):
         for jogador in self.lista_de_jogadores:
             if jogador[2] >= 13:
-                print(
-                    f"{colored('VITORIOSOO!', 'green')} {jogador[1]} tá com a pança cheia de cérebros!")
+                self.print_linha()
+                print(f"{colored('VITORIOSOO!', 'green', attrs=['bold'])}")
+                print(f"{jogador[1]} tá com a pança cheia de cérebros!")
+                self.print_linha()
                 exit()
 
     # Verificar a cor do dado
@@ -112,8 +112,8 @@ class Zombie_Dice:
 
     # Tirar três dados do tubo
     def tirar_dados(self, jogador):
-        print(f"Rolando os dados para {jogador[1]}:")
         self.print_linha()
+        print(f"Rolando os dados para {jogador[1]}:")
         for i in range(3):
             sleep(1)
             numero_sorteado = randint(0, len(self.tubo) - 1)
@@ -127,44 +127,43 @@ class Zombie_Dice:
                 print(colored("CÉÉREBRO!!", 'blue'))
                 print("Você comeu um cérebro!")
                 self.tubo.pop(numero_sorteado)
-                self.contar_dados_tubo()
                 jogador[2] += 1
 
             elif dado_sorteado[face_sorteada] == "T":
                 print(colored("TIIIRO!", 'red'))
                 print("Você levou um tiro!")
                 self.tubo.pop(numero_sorteado)
-                self.contar_dados_tubo()
                 jogador[3] += 1
 
             else:
                 print(colored("PASSOS!", 'cyan'))
                 print("A vítima escapou nessa rodada!")
                 self.tubo.pop(numero_sorteado)
-                self.contar_dados_tubo()
                 self.tubo.append(dado_sorteado)
                 jogador[4] += 1
             self.print_linha()
-
-        self.print_linha()
+        self.contar_dados_tubo()
         print(
             f"{jogador[1]}, você tem {jogador[2]} cérebros e {jogador[3]} tiros")
         if jogador[3] < 3:
+            self.print_linha()
             continuar_resposta = input(
-                f"{jogador[1]} continuar jogando os dados? (S/N) \n")
+                f"Continuar jogando os dados? (S/N) \n")
             if (continuar_resposta == "S" or continuar_resposta == "s"):
                 self.tirar_dados(jogador)
+
         else:
             print(
-                f"Vishh {jogador[1]}, você levou {jogador[3]} tiros e zerou seu cemitério de cérebros.")
-            sleep(0.5)
+                colored(f"Vishh {jogador[1]}, você levou {jogador[3]} tiros e zerou seu cemitério de cérebros.", 'red'))
+            self.print_linha()
+            sleep(1)
             print("Passando a jogada para o próximo jogador...")
-            sleep(0.5)
+            sleep(1)
             jogador[2] = 0
             sleep(1)
-            self.print_linha()
 
     # Função jogar
+
     def jogar(self):
         while True:
             self.print_linha()
@@ -174,22 +173,18 @@ class Zombie_Dice:
             sleep(0.8)
             self.numero_jogadores()
             self.carregar_tubo()
-            self.print_linha()
-            print("=                      VAMOS COMEÇAR O JOGO                    =")
+            print("+" + "VAMOS COMEÇAR O JOGO".center(self.line_size - 2) + "+")
             self.print_linha()
             sleep(1)
-            self.print_linha()
-            print("=                        ROLANDO OS DADOS...                   =")
-            self.print_linha()
-
+            print("+" + "ROLANDO OS DADOS".center(self.line_size - 2) + "+")
             while True:
                 for jogador in self.lista_de_jogadores:
                     self.tirar_dados(jogador)
                     if jogador[0] == self.lista_de_jogadores[len(self.lista_de_jogadores) - 1][0]:
                         self.rodada += 1
+                        self.verificar_vitoria()
                         self.exibir_rodada()
                         self.zerar_tiros()
-                        self.verificar_vitoria()
                     self.carregar_tubo()
 
 
